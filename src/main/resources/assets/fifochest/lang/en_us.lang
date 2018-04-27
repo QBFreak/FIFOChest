@@ -1,0 +1,6 @@
+# Items
+item.ingot_cubium.name=Cubium Ingot
+
+# Blocks
+tile.ore_cubium.name=Cubium Ore
+tile.chest_fifo.name=FIFO Chest

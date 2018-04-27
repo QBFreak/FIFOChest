@@ -1,0 +1,12 @@
+{
+  "forge_marker": 1,
+  "variants": {
+    "normal": {
+      "model": "fifochest:chest_fifo"
+    },
+    "inventory": {
+      "model": "fifochest:chest_fifo",
+      "transform": "forge:default-block"
+    }
+  }
+}

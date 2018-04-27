@@ -1,0 +1,16 @@
+[
+{
+  "modid": "fifochest",
+  "name": "FIFO Chest",
+  "description": "First-In First-Out Chest. Dumps the oldest stack when full and a new stack of items arrives.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["ExampleDude"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
