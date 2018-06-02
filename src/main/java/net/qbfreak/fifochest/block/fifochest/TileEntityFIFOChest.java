@@ -4,11 +4,35 @@ import jline.internal.Nullable;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class TileEntityFIFOChest extends TileEntity {
+public class TileEntityFIFOChest extends TileEntity implements ITickable {
+
+    private int tickDelay = 10;
+    private NBTTagCompound contents;
+    private NBTTagCompound prevContents;
+
+    @Override
+    public void update() {
+        if (world.isRemote) {
+            tickDelay--;
+            if (tickDelay <= 0) {
+                checkContents();
+                tickDelay = 10;
+            }
+        }
+    }
+
+    private void checkContents() {
+        contents = inventory.serializeNBT();
+        if (contents != prevContents) {
+            System.out.println("Contents have changed.");
+        }
+        prevContents = contents;
+    }
 
     private ItemStackHandler inventory = new ItemStackHandler(27);
 
@@ -38,7 +62,7 @@ public class TileEntityFIFOChest extends TileEntity {
     @Override
     public void markDirty() {
         super.markDirty();
-        System.out.println("Slot changed!");
+        checkContents();
     }
 
 }
