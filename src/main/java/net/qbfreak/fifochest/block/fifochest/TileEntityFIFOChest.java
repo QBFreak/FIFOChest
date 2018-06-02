@@ -1,6 +1,7 @@
 package net.qbfreak.fifochest.block.fifochest;
 
 import jline.internal.Nullable;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -11,30 +12,51 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public class TileEntityFIFOChest extends TileEntity implements ITickable {
 
+    private static int chestSize = 27;
     private int tickDelay = 10;
-    private NBTTagCompound contents;
-    private NBTTagCompound prevContents;
+
+    private ItemStack[] contents;
+    private ItemStack[] prevContents;
+    private boolean init = false;
+
+    TileEntityFIFOChest() {
+        contents = new ItemStack[chestSize];
+        prevContents = new ItemStack[chestSize];
+    }
 
     @Override
     public void update() {
-        if (world.isRemote) {
+        if (!world.isRemote) {
+            if (!init) {
+                for (int i=0; i<chestSize;i++) {
+                    contents[i] = inventory.getStackInSlot(i);
+                    prevContents[i] = contents[i];
+                }
+                init = true;
+            }
+
             tickDelay--;
             if (tickDelay <= 0) {
                 checkContents();
-                tickDelay = 10;
+                tickDelay = 40; // 10
             }
         }
     }
 
     private void checkContents() {
-        contents = inventory.serializeNBT();
-        if (contents != prevContents) {
-            System.out.println("Contents have changed.");
+        for (int i=0; i<chestSize;i++) {
+            contents[i] = inventory.getStackInSlot(i);
+            if (contents[i] != prevContents[i]) {
+                System.out.println("Slot " + i + " has changed.");
+                System.out.println(prevContents[i].toString());
+                System.out.println(contents[i].toString());
+                System.out.println("");
+            }
+            prevContents[i] = contents[i];
         }
-        prevContents = contents;
     }
 
-    private ItemStackHandler inventory = new ItemStackHandler(27);
+    private ItemStackHandler inventory = new ItemStackHandler(chestSize );
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
@@ -62,7 +84,9 @@ public class TileEntityFIFOChest extends TileEntity implements ITickable {
     @Override
     public void markDirty() {
         super.markDirty();
-        checkContents();
+        if (!world.isRemote) {
+            checkContents();
+        }
     }
 
 }
